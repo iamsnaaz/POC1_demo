@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "your-dockerhub-username/poc-app"
+        IMAGE_NAME = "iamsnaaz/cicd-pipeline-demo"
         TAG = "latest"
     }
 
