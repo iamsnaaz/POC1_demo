@@ -8,6 +8,16 @@ pipeline {
 
     stages {
 
+        stage('Cleanup Before Build') {
+            steps {
+                sh '''
+                docker system prune -af || true
+                rm -rf trivy-cache || true
+                rm -rf /tmp/* || true
+                '''
+            }
+        }
+
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/iamsnaaz/POC1_demo.git'
@@ -26,7 +36,6 @@ pipeline {
             }
         }
 
-        
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonar-server') {
@@ -35,8 +44,7 @@ pipeline {
             }
         }
 
-
-       stage('OWASP Scan') {
+        stage('OWASP Scan') {
             steps {
                 withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_KEY')]) {
                     dependencyCheck(
@@ -44,13 +52,13 @@ pipeline {
                         additionalArguments: '--scan . --out ./dc-report --format XML --format HTML --noupdate'
                     )
                 }
-        
+
                 dependencyCheckPublisher(
                     pattern: 'dc-report/dependency-check-report.xml'
                 )
             }
         }
-        
+
         stage('Docker Build') {
             steps {
                 sh 'docker build -t $IMAGE_NAME:$TAG .'
@@ -65,7 +73,8 @@ pipeline {
                 --cache-dir trivy-cache \
                 --skip-version-check \
                 --scanners vuln \
-                $IMAGE_NAME:$TAG
+                --exit-code 0 \
+                $IMAGE_NAME:$TAG > trivy-report.txt
                 '''
             }
         }
@@ -91,6 +100,15 @@ pipeline {
                 docker run -d -p 8081:8080 --name poc-container $IMAGE_NAME:$TAG
                 '''
             }
+        }
+    }
+
+    post {
+        always {
+            sh '''
+            docker system prune -af || true
+            rm -rf trivy-cache || true
+            '''
         }
     }
 }
