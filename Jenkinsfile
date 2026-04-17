@@ -26,6 +26,31 @@ pipeline {
             }
         }
 
+        
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         withSonarQubeEnv('sonar-server') {
+        //             sh 'mvn sonar:sonar'
+        //         }
+        //     }
+        // }
+
+
+        stage('OWASP Scan') {
+            steps {
+                withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_KEY')]) {
+                    dependencyCheck additionalArguments: """
+                        --scan .
+                        --format ALL
+                        --nvdApiKey $NVD_KEY
+                    """,
+                    odcInstallation: 'Dependency-Check'
+                }
+        
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+
         stage('Docker Build') {
             steps {
                 sh 'docker build -t $IMAGE_NAME:$TAG .'
