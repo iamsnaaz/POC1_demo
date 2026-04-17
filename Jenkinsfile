@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = "iamsnaaz/cicd-pipeline-demo"
         TAG = "latest"
     }
-
+    stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/iamsnaaz/POC1_demo.git'
