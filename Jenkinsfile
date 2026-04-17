@@ -60,9 +60,12 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 sh '''
-                trivy image --severity HIGH,CRITICAL \
-                --no-progress \
-                $IMAGE_NAME:$TAG > trivy-report.txt
+                mkdir -p trivy-cache
+                trivy image \
+                --cache-dir trivy-cache \
+                --skip-version-check \
+                --scanners vuln \
+                $IMAGE_NAME:$TAG
                 '''
             }
         }
