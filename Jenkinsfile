@@ -41,7 +41,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_KEY')]) {
                     dependencyCheck(
                         odcInstallation: 'Dependency-Check',
-                        additionalArguments: '--scan . --out ./dc-report --format XML --format HTML --nvdApiKey $NVD_KEY'
+                        additionalArguments: '--scan . --out ./dc-report --format XML --format HTML --noupdate'
                     )
                 }
         
