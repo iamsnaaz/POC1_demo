@@ -57,6 +57,16 @@ pipeline {
             }
         }
 
+        stage('Trivy Scan') {
+            steps {
+                sh '''
+                trivy image --severity HIGH,CRITICAL \
+                --no-progress \
+                $IMAGE_NAME:$TAG > trivy-report.txt
+                '''
+            }
+        }
+
         stage('Docker Push') {
             steps {
                 withCredentials([usernamePassword(
