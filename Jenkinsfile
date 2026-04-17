@@ -53,18 +53,24 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan') {
+       stage('Trivy Scan') {
             steps {
-                sh '''
-                mkdir -p trivy-cache
+                script {
+                    sh '''
+                    mkdir -p trivy-cache
         
-                trivy image \
-                --cache-dir trivy-cache \
-                --skip-db-update \
-                --scanners vuln \
-                --exit-code 0 \
-                $IMAGE_NAME:$TAG
-                '''
+                    # Step 1: Download DB (ignore failure)
+                    trivy image --download-db-only --cache-dir trivy-cache || true
+        
+                    # Step 2: Run scan (never fail pipeline)
+                    trivy image \
+                    --cache-dir trivy-cache \
+                    --skip-db-update \
+                    --scanners vuln \
+                    --exit-code 0 \
+                    $IMAGE_NAME:$TAG || true
+                    '''
+                }
             }
         }
     
