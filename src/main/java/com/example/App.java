@@ -29,9 +29,9 @@ public class App {
                     </style>
                 </head>
                 <body>
-                    <h1>🚀 CI/CD POC Successful!</h1>
-                    <p>Java app deployed on EKS</p>
-                    <p>Using Terraform + GitHub Actions</p>
+                    <h1> CI/CD POC Successful!</h1>
+                    <p>Java app deployed </p>
+                    <p>GitHub+jenkins+DockerHub</p>
                 </body>
                 </html>
             """;
