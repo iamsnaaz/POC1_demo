@@ -6,18 +6,6 @@ pipeline {
         TAG = "latest"
     }
 
-    stages {
-
-        stage('Cleanup Before Build') {
-            steps {
-                sh '''
-                docker system prune -af || true
-                rm -rf trivy-cache || true
-                rm -rf /tmp/* || true
-                '''
-            }
-        }
-
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/iamsnaaz/POC1_demo.git'
@@ -69,16 +57,17 @@ pipeline {
             steps {
                 sh '''
                 mkdir -p trivy-cache
+        
                 trivy image \
                 --cache-dir trivy-cache \
-                --skip-version-check \
+                --skip-db-update \
                 --scanners vuln \
                 --exit-code 0 \
-                $IMAGE_NAME:$TAG > trivy-report.txt
+                $IMAGE_NAME:$TAG
                 '''
             }
         }
-
+    
         stage('Docker Push') {
             steps {
                 withCredentials([usernamePassword(
