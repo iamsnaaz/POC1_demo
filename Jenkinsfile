@@ -10,7 +10,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/iamsnaaz/poc2.git'
+                git branch: 'main', url: 'https://github.com/iamsnaaz/POC1_demo.git'
             }
         }
 
