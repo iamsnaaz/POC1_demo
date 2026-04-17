@@ -59,10 +59,10 @@ pipeline {
                     sh '''
                     mkdir -p trivy-cache
         
-                    # Step 1: Download DB (ignore failure)
+                    # Step 1: Download DB 
                     trivy image --download-db-only --cache-dir trivy-cache || true
         
-                    # Step 2: Run scan (never fail pipeline)
+                    # Step 2: Run scan 
                     trivy image \
                     --cache-dir trivy-cache \
                     --skip-db-update \
