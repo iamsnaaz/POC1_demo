@@ -31,7 +31,7 @@ public class App {
                 <body>
                     <h1> CI/CD POC Successful!</h1>
                     <p>Java app deployed </p>
-                    <p>GitHub+jenkins+DockerHub</p>
+                    <p>GitHub+jenkins+DockerHub+ansible</p>
                 </body>
                 </html>
             """;
